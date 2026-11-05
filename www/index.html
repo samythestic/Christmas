@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Winter Solstice ❄️ An Echo of Us</title>
+    <!-- Aesthetic, Poetic & Festive Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;1,400;1,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-night-1: #070d18;
+            --bg-night-2: #0f1c30;
+            --bg-night-3: #182b48;
+            --globe-glow: rgba(135, 206, 250, 0.45);
+            --gold-base: linear-gradient(135deg, #d4af37 0%, #f9e58b 50%, #aa821e 100%);
+            --wood-gradient: linear-gradient(180deg, #442416 0%, #2e170d 50%, #1b0c06 100%);
+            --glass-bg: rgba(18, 30, 52, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.22);
+            --glass-glow: rgba(147, 197, 253, 0.25);
+            --text-glow: 0 0 15px rgba(255, 255, 255, 0.6);
+            --accent-pink: #ff8da1;
+            --accent-gold: #ffd166;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: radial-gradient(circle at 50% 25%, var(--bg-night-2) 0%, var(--bg-night-1) 80%, #03060c 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+            overflow-y: auto;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Ambient background vignette and soft glow */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(62, 106, 171, 0.2) 0%, rgba(15, 28, 48, 0) 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Fullscreen Snow Canvas */
+        #snow-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Sparkle / Heart Burst Container */
+        #fx-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 15;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        /* Centered Application Container */
+        .app-container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 580px;
+            padding: 24px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: auto;
+        }
+
+        /* Header Title & Subtitle */
+        .header {
+            text-align: center;
+            margin-bottom: 22px;
+            pointer-events: none;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #ffffff 0%, #e0eaff 50%, #ffc0cb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 25px rgba(255, 200, 220, 0.35);
+        }
+
+        .header .subtitle {
+            font-size: 0.88rem;
+            color: #a5b4fc;
+            margin-top: 4px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: 400;
+            opacity: 0.85;
+        }
+
+        /* ============================================================
+           THE SNOW GLOBE COMPONENT
+           ============================================================ */
+        .globe-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            outline: none;
+            touch-action: manipulation;
+            transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+            filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.7));
+        }
+
+        .globe-wrapper:hover {
+            transform: translateY(-4px) scale(1.02);
+        }
+
+        .globe-wrapper:active {
+            transform: scale(0.98);
+        }
+
+        /* Physical Shake Animation (Side-to-Side + Slight Rotation, ~0.5s) */
+        .globe-wrapper.shake {
+            animation: snowglobe-shake 0.52s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+
+        @keyframes snowglobe-shake {
+            0% { transform: scale(1) translate3d(0, 0, 0) rotate(0deg); }
+            12% { transform: scale(1.03) translate3d(-10px, -2px, 0) rotate(-5deg); }
+            24% { transform: scale(1.03) translate3d(9px, 1px, 0) rotate(5deg); }
+            38% { transform: scale(1.02) translate3d(-7px, -1px, 0) rotate(-3.5deg); }
+            52% { transform: scale(1.01) translate3d(6px, 1px, 0) rotate(3deg); }
+            68% { transform: scale(1) translate3d(-4px, 0, 0) rotate(-1.5deg); }
+            82% { transform: scale(1) translate3d(2px, 0, 0) rotate(1deg); }
+            100% { transform: scale(1) translate3d(0, 0, 0) rotate(0deg); }
+        }
+
+        /* The Spherical Glass Dome */
+        .glass-dome {
+            width: 290px;
+            height: 290px;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at 50% 32%, #193150 0%, #0d1e34 60%, #060e1a 100%);
+            /* Glowing drop-shadow and 3D glass refraction */
+            box-shadow: 
+                0 0 25px var(--globe-glow),
+                0 0 60px rgba(96, 165, 250, 0.22),
+                inset 0 0 35px rgba(180, 220, 255, 0.38),
+                inset 0 -15px 30px rgba(14, 27, 46, 0.75),
+                inset 0 10px 25px rgba(255, 255, 255, 0.35);
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            z-index: 2;
+        }
+
+        /* Twinkling Miniature Stars Inside the Dome Sky */
+        .globe-stars {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                radial-gradient(1px 1px at 45px 50px, #ffffff, transparent),
+                radial-gradient(1.5px 1.5px at 190px 65px, #ffffff, transparent),
+                radial-gradient(1px 1px at 90px 110px, rgba(255,255,255,0.85), transparent),
+                radial-gradient(1.5px 1.5px at 230px 125px, rgba(255,255,255,0.7), transparent),
+                radial-gradient(1px 1px at 145px 35px, rgba(255,255,255,0.9), transparent),
+                radial-gradient(1px 1px at 70px 80px, rgba(255,255,255,0.75), transparent);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* The Character Figurine Standing on the Snow Ground */
+        .character-container {
+            position: absolute;
+            bottom: 26px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 175px;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .character-figurine {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.5));
+            transition: transform 0.4s ease;
+        }
+
+        .character-foot-shadow {
+            width: 82px;
+            height: 12px;
+            background: radial-gradient(ellipse at center, rgba(10, 22, 38, 0.7) 0%, transparent 75%);
+            border-radius: 50%;
+            margin-top: -6px;
+            filter: blur(1px);
+        }
+
+        .character-container {
+            transition: opacity 0.3s ease, transform 0.4s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .character-container.fallback-visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .character-container.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .globe-wrapper:hover .character-figurine {
+            transform: scale(1.02) translateY(-2px);
+        }
+
+        /* Animated Character Videos (Idle & Reaction) */
+        .character-video {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: auto;
+            max-width: none;
+            mix-blend-mode: screen;
+            pointer-events: none;
+            transition: opacity 0.28s ease;
+        }
+
+        /* Idle Video (vrthe nikana.webm - scaled so character stays figurine-sized inside globe) */
+        .idle-video {
+            bottom: 22px;
+            height: 195px;
+            opacity: 1;
+            z-index: 2;
+        }
+
+        .idle-video.hidden {
+            opacity: 0;
+        }
+
+        /* Shake Reaction Video (Main Edit.mp4 - scaled & positioned to match idle size exactly) */
+        .reaction-video {
+            bottom: -58px;
+            height: 357px;
+            opacity: 0;
+            z-index: 3;
+        }
+
+        .reaction-video.playing {
+            opacity: 1;
+        }
+
+        /* Mini Canvas for Snow Swirling INSIDE the Globe */
+        #inner-snow-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        /* Soft snowy accumulation inside the bottom rim */
+        .inner-snow-ground {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 115%;
+            height: 60px;
+            background: radial-gradient(ellipse at 50% 25%, #ffffff 0%, #e3efff 65%, #aecfff 100%);
+            border-radius: 50%;
+            box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.95), 0 -2px 10px rgba(160, 205, 255, 0.4);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Glass Specular Curved Highlight (Top-Left) */
+        .glass-dome::before {
+            content: '';
+            position: absolute;
+            top: 6%;
+            left: 10%;
+            width: 48%;
+            height: 25%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.1) 75%, transparent 100%);
+            border-radius: 50%;
+            transform: rotate(-36deg);
+            filter: blur(2px);
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        /* Glass Soft Rim Arc (Bottom-Right) */
+        .glass-dome::after {
+            content: '';
+            position: absolute;
+            bottom: 8%;
+            right: 12%;
+            width: 25%;
+            height: 12%;
+            background: rgba(255, 255, 255, 0.35);
+            border-radius: 50%;
+            transform: rotate(-25deg);
+            filter: blur(4px);
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        /* Wooden & Metallic Base */
+        .globe-base {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1;
+            margin-top: -18px; /* Tucks seamlessly under the dome */
+        }
+
+        /* Upper Ring / Collar */
+        .base-collar {
+            width: 216px;
+            height: 18px;
+            background: var(--gold-base);
+            border-radius: 9px;
+            box-shadow: 
+                inset 0 1px 2px rgba(255, 255, 255, 0.8),
+                inset 0 -2px 3px rgba(0, 0, 0, 0.4),
+                0 4px 10px rgba(0, 0, 0, 0.5);
+            z-index: 2;
+        }
+
+        /* Main Pedestal Tier */
+        .base-body {
+            width: 236px;
+            height: 52px;
+            margin-top: -6px;
+            background: var(--wood-gradient);
+            border-radius: 12px 12px 18px 18px;
+            box-shadow: 
+                inset 0 3px 4px rgba(255, 255, 255, 0.2),
+                inset 0 -4px 6px rgba(0, 0, 0, 0.7),
+                0 18px 30px rgba(0, 0, 0, 0.7);
+            border-bottom: 4px solid #140804;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Golden Inscription Plaque */
+        .base-plaque {
+            background: var(--gold-base);
+            padding: 3px 14px;
+            border-radius: 4px;
+            box-shadow: 
+                inset 0 1px 1px rgba(255, 255, 255, 0.8),
+                0 2px 4px rgba(0, 0, 0, 0.5);
+            border: 1px solid #997316;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .base-plaque span {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #3b2405;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        /* Globe Pedestal Table Reflection Shadow */
+        .globe-shadow {
+            width: 220px;
+            height: 16px;
+            background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 75%);
+            margin-top: 2px;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* ============================================================
+           THE GLASSMORPHISM TEXT CONTAINER
+           ============================================================ */
+        .glass-card {
+            margin-top: 24px;
+            width: 100%;
+            max-width: 480px;
+            min-height: 145px;
+            padding: 24px 28px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 
+                0 16px 40px rgba(0, 0, 0, 0.45),
+                inset 0 1px 0 rgba(255, 255, 255, 0.35),
+                0 0 25px var(--glass-glow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.35);
+            box-shadow: 
+                0 18px 45px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4),
+                0 0 32px rgba(147, 197, 253, 0.35);
+        }
+
+        /* Aesthetic Philosophical Badge */
+        .reason-badge {
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent-gold);
+            margin-bottom: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            opacity: 0.88;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Quote Wrapper with Smooth Fade Transition */
+        .quote-wrapper {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1), transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .quote-wrapper.fade-out {
+            opacity: 0;
+            transform: translateY(8px) scale(0.97);
+        }
+
+        /* Philosophical & Poetic Quote Text */
+        .message-text {
+            font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+            font-style: italic;
+            font-size: 1.35rem;
+            line-height: 1.5;
+            color: #f8fafc;
+            text-shadow: 0 2px 14px rgba(0, 0, 0, 0.6);
+            letter-spacing: 0.2px;
+            margin: 0;
+            display: block;
+        }
+
+        /* Author Attribution */
+        .quote-author {
+            display: block;
+            margin-top: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #cbd5e1;
+            opacity: 0.85;
+            transition: opacity 0.3s ease;
+        }
+
+        .quote-author::before {
+            content: '— ';
+            color: var(--accent-gold);
+        }
+
+        /* Call-to-action Hint */
+        .hint-text {
+            margin-top: 14px;
+            font-size: 0.74rem;
+            color: #94a3b8;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-transform: uppercase;
+            opacity: 0.7;
+            transition: opacity 0.4s ease;
+        }
+
+        .hint-text .shake-icon {
+            display: inline-block;
+            animation: bounce-icon 2s infinite ease-in-out;
+        }
+
+        @keyframes bounce-icon {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        /* Floating Hearts / Sparkles on Click */
+        .particle-fx {
+            position: absolute;
+            pointer-events: none;
+            font-size: 1.2rem;
+            animation: float-sparkle 1s ease-out forwards;
+            z-index: 20;
+        }
+
+        @keyframes float-sparkle {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(0.6) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(1.3) rotate(var(--tr));
+            }
+        }
+
+        /* Footer Credits */
+        .footer-note {
+            margin-top: 18px;
+            font-size: 0.78rem;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+
+        .footer-note span {
+            color: var(--accent-pink);
+        }
+
+        /* Subtle Motion Sensor Status Pill / Button */
+        .motion-pill {
+            margin-top: 12px;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #93c5fd;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            padding: 4px 14px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .motion-pill:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+        }
+
+        /* ============================================================
+           MOBILE RESPONSIVENESS
+           ============================================================ */
+        @media (max-width: 480px) {
+            .app-container {
+                padding: 16px 14px;
+            }
+
+            .header {
+                margin-bottom: 16px;
+            }
+
+            .header h1 {
+                font-size: 1.55rem;
+            }
+
+            .header .subtitle {
+                font-size: 0.78rem;
+            }
+
+            .glass-dome {
+                width: 240px;
+                height: 240px;
+            }
+
+            .character-container {
+                bottom: 20px;
+                width: 145px;
+                height: 165px;
+            }
+
+            .base-collar {
+                width: 180px;
+                height: 15px;
+            }
+
+            .base-body {
+                width: 196px;
+                height: 44px;
+            }
+
+            .base-plaque {
+                padding: 2px 10px;
+            }
+
+            .base-plaque span {
+                font-size: 0.6rem;
+            }
+
+            .globe-shadow {
+                width: 180px;
+                height: 12px;
+            }
+
+            .glass-card {
+                padding: 18px 20px;
+                min-height: 115px;
+                margin-top: 18px;
+                border-radius: 20px;
+            }
+
+            .message-text {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-height: 680px) {
+            .app-container {
+                padding: 10px 14px;
+            }
+            .header {
+                margin-bottom: 10px;
+            }
+            .glass-dome {
+                width: 220px;
+                height: 220px;
+            }
+            .glass-card {
+                margin-top: 14px;
+                padding: 14px 18px;
+                min-height: 95px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Fullscreen Snow Particle Canvas (Background) -->
+    <canvas id="snow-canvas"></canvas>
+
+    <!-- FX Sparkle / Heart Particle Container -->
+    <div id="fx-container"></div>
+
+    <!-- Main Centered App Content -->
+    <main class="app-container">
+        
+        <header class="header">
+            <h1>An Echo in the Snow</h1>
+            <div class="subtitle">✦ Fragments of Love & Thought ✦</div>
+        </header>
+
+        <!-- Interactive Snow Globe -->
+        <section 
+            class="globe-wrapper" 
+            id="snow-globe" 
+            role="button" 
+            tabindex="0" 
+            aria-label="">
+            
+            <div class="glass-dome">
+                <!-- Twinkling Miniature Stars in Globe Sky -->
+                <div class="globe-stars"></div>
+
+                <!-- Miniature Character Figurine Standing Inside -->
+                <div class="character-container" id="character-still">
+                    <img 
+                        src="character_christmas.png" 
+                        alt="Christmas Miniature Figurine" 
+                        class="character-figurine"
+                        onerror="this.src='character_clean.png'">
+                    <div class="character-foot-shadow"></div>
+                </div>
+
+                <!-- Idle Looping Character Video (vrthe nikana.webm - plays continuously when not shaken) -->
+                <video 
+                    id="idle-video"
+                    class="character-video idle-video"
+                    autoplay
+                    loop
+                    muted
+                    playsinline
+                    webkit-playsinline
+                    preload="auto">
+                    <source src="vrthe%20nikana.webm" type="video/webm">
+                    <source src="vrthe nikana.webm" type="video/webm">
+                </video>
+
+                <!-- Animated Reaction Video (Main Edit.mp4 - plays right after globe is shaken!) -->
+                <video 
+                    id="character-video"
+                    class="character-video reaction-video"
+                    preload="auto"
+                    muted
+                    playsinline
+                    webkit-playsinline>
+                    <source src="Main%20Edit.mp4" type="video/mp4">
+                    <source src="Main Edit.mp4" type="video/mp4">
+                </video>
+
+                <!-- Internal Snow Flurry Canvas (Swirls around the figurine) -->
+                <canvas id="inner-snow-canvas"></canvas>
+                
+                <!-- Snowy Ground Mound Inside Globe -->
+                <div class="inner-snow-ground"></div>
+            </div>
+
+            <!-- Wooden & Gold Pedestal Base -->
+            <div class="globe-base">
+                <div class="base-collar"></div>
+                <div class="base-body">
+                    <div class="base-plaque">
+                        <span>✦ Two Souls ✦</span>
+                    </div>
+                </div>
+                <div class="globe-shadow"></div>
+            </div>
+        </section>
+
+        <!-- Glassmorphism Text Box -->
+        <section class="glass-card" id="glass-card">
+            <div class="reason-badge" id="reason-badge">
+                <span id="badge-text">✦ Reflection ✦</span>
+            </div>
+            
+            <div class="quote-wrapper" id="quote-wrapper">
+                <p class="message-text" id="message-text">“Tap the globe to shake the Globe...”</p>
+                <span class="quote-author" id="quote-author" style="display: none;"></span>
+            </div>
+            
+            <div class="hint-text" id="hint-text">
+                <span class="shake-icon">📱</span> 
+            </div>
+
+            <button class="motion-pill" id="motion-btn" type="button" aria-label="Enable phone shake motion">
+                <span></span>
+            </button>
+        </section>
+
+        <footer class="footer-note">
+            For the quiet spaces between us ✦
+        </footer>
+
+    </main>
+
+    <!-- Holiday Jingle Shake Audio -->
+    <audio id="shake-audio" preload="auto">
+        <source src="shake_sound.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- ============================================================
+         JAVASCRIPT LOGIC
+         ============================================================ -->
+    <script>
+        // --- 1. Poetic & Philosophical Quotes on Love & Connection ---
+        const philosophicalQuotes = [
+            {
+                quote: "Who am i ,without my Teresa Lisbon😫.",
+                author: "Patrick Samith"
+            },
+            {
+                quote: "In the midst of winter, I found there was, within me, an invincible summer.",
+                author: "Albert Camus"
+            },
+            {
+                quote: "Whatever our souls are made of, yours and mine are the same,ig(but im sure it is tho😜)",
+                author: "Njan Thane"
+            },
+            {
+                quote: "What you seek is seeking you.",
+                author: "Rumi"
+            },
+            {
+                quote: "There is always some madness in love. But there is also always some reason in madness.",
+                author: "Friedrich Nietzsche"
+            },
+            {
+                quote: "If I know what autism is, it is because of you.",
+                author: "Hermann Samith"
+            },
+            {
+                quote: "It is only with the heart that one can see rightly; what is essential is invisible to the eye.",
+                author: "Antoine de Saint-Exupéry"
+            },
+            {
+                quote: "Out beyond ideas of wrong and right, there is a field. I will meet you there.",
+                author: "Rumi"
+            },
+            {
+                quote: "To love is to recognize yourself in another.",
+                author: "Eckhart Tolle"
+            },
+            {
+                quote: "Invisible threads are the strongest ties.",
+                author: "Friedrich Nietzsche"
+            },
+            {
+                quote: "You are the silence between notes that makes the music beautiful.",
+                author: "Rainer Maria Rilke"
+            },
+            {
+                quote: "To love or have loved, that is enough. There is no other pearl to be found in the dark folds of life.",
+                author: "Victor Hugo"
+            },
+            {
+                quote: "Dwell on the beauty of life. Watch the stars, and see yourself running with them.",
+                author: "Marcus Aurelius"
+            },
+            {
+                quote: "Love does not consist in gazing at each other, but in looking outward together in the same direction.",
+                author: "Antoine de Saint-Exupéry"
+            },
+            {
+                quote: "Let yourself be silently drawn by the strange pull of what you truly love.",
+                author: "Rumi"
+            },
+            {
+                quote: "You don't have to bloom this Christmas; just let someone admire your winter.",
+             
+            },
+             {
+                quote: "Even snow-covered gardens are worthy of being admired.",
+             
+            },
+             {
+                quote: "You can keep your winter heart; I wouldn't mind being your little December warmth.",
+             
+            },
+             {
+                quote: "Two hearts, caught between destiny and doubt.",
+                author: "Us"
+            },
+             {
+                quote: "The stars aligned,lost somewhere between longing and healing.",
+                author: "Samith 😏"
+            },
+             {
+                quote: "A beutiful almost, lost somewhere between longing and healing.",
+                author: "Samith😏"
+            },
+             {
+                quote: "You don't have to bloom all at once; even spring takes its time.",
+                
+            },
+             {
+                quote: "You needn't be an unfinished poem to believe you can still be someone's favourite verse.",
+             
+            },
+             {
+                quote: "Don't mistake your unfinished healing for an inability to be loved..",
+              
+            },
+             {
+                quote: "You deserve the love you keep convincing yourself you're not ready for.",
+           
+            },
+             {
+                quote: "The stars don't question their worth because they haven't conquered the darkness.",
+           
+            },
+             {
+                quote: "You can be a work in progress and still be worthy of something beautiful.",
+        
+            },
+             {
+                quote: "Don't let the fear of breaking something beautiful stop you from believing you can nurture it.",
+        
+            },
+             {
+                quote: "Like a flower, you needn't be in full bloom to deserve the warmth of the sun.",
+        
+            },
+             {
+                quote: "If you're a winter, I'd gladly learn to love every shade of December.",
+        
+            },
+             {
+                quote: "Who said winter can't be someone's favourite season? Perhaps it just hasn't met the right sunshine.",
+        
+            },
+             {
+                quote: "I'd rather have a thousand Decembers with your uncertainties than one perfect summer without you.",
+        
+            },
+             {
+                quote: "You worry about being the winter; I wonder if you know how beautifully you make December feel.",
+        
+            },
+             {
+                quote: "You don't have to be the Christmas miracle; being the reason behind my smile is quite enough, muhehehe.",
+        
+            },
+             {
+                quote: "If you're winter, I guess I've never needed a summer.",
+        
+            },
+             {
+                quote: "You can keep your cold little heart; I've always had a weakness for winter.",
+        
+            },
+             {
+                quote: "If December had a favourite view, I suppose mine would be you.",
+        
+            },
+             {
+                quote: ".",
+        
+            },
+             {
+                quote: ".",
+        
+            },
+             {
+                quote: ".",
+        
+            },
+        ];
+
+        // DOM Element References
+        const snowGlobe = document.getElementById('snow-globe');
+        const characterStill = document.getElementById('character-still');
+        const idleVideo = document.getElementById('idle-video');
+        const characterVideo = document.getElementById('character-video');
+        const shakeAudio = document.getElementById('shake-audio');
+        const quoteWrapper = document.getElementById('quote-wrapper');
+        const messageText = document.getElementById('message-text');
+        const quoteAuthor = document.getElementById('quote-author');
+        const badgeText = document.getElementById('badge-text');
+        const hintText = document.getElementById('hint-text');
+        const fxContainer = document.getElementById('fx-container');
+
+        // Start idle video loop (vrthe nikana.webm)
+        function startIdleVideo() {
+            if (idleVideo && idleVideo.paused && (!characterVideo || !characterVideo.classList.contains('playing'))) {
+                idleVideo.play().catch(err => {
+                    console.log('Idle video autoplay paused until user interaction:', err);
+                });
+            }
+        }
+
+        if (idleVideo) {
+            idleVideo.play().catch(() => {});
+            idleVideo.addEventListener('error', () => {
+                console.warn('Idle video failed to load, falling back to figurine image.');
+                if (characterStill) characterStill.classList.add('fallback-visible');
+            });
+        }
+
+        // Reaction Video Event Listener: When shake animation completes, return to idle loop!
+        if (characterVideo) {
+            characterVideo.addEventListener('ended', () => {
+                characterVideo.classList.remove('playing');
+                // Resume idle looping video smoothly
+                if (idleVideo) {
+                    idleVideo.classList.remove('hidden');
+                    idleVideo.play().catch(err => console.log('Error resuming idle video:', err));
+                } else if (characterStill) {
+                    characterStill.classList.remove('hidden');
+                }
+            });
+
+            characterVideo.addEventListener('error', () => {
+                console.warn('Reaction video failed to play.');
+                characterVideo.classList.remove('playing');
+                if (idleVideo) {
+                    idleVideo.classList.remove('hidden');
+                    idleVideo.play().catch(() => {});
+                } else if (characterStill) {
+                    characterStill.classList.remove('hidden');
+                }
+            });
+        }
+
+        // Play reaction video and stop idle video when shaken
+        function playReactionVideo() {
+            // Stop and hide the idle video immediately
+            if (idleVideo) {
+                idleVideo.pause();
+                idleVideo.classList.add('hidden');
+            }
+            if (characterStill) {
+                characterStill.classList.add('hidden');
+            }
+
+            if (!characterVideo) return;
+            characterVideo.classList.add('playing');
+            characterVideo.currentTime = 0;
+            const promise = characterVideo.play();
+            if (promise !== undefined) {
+                promise.catch(err => {
+                    console.log('Autoplay reaction prevented:', err);
+                    characterVideo.classList.remove('playing');
+                    // Fall back to idle video if reaction couldn't play
+                    if (idleVideo) {
+                        idleVideo.classList.remove('hidden');
+                        idleVideo.play().catch(() => {});
+                    } else if (characterStill) {
+                        characterStill.classList.remove('hidden');
+                    }
+                });
+            }
+        }
+
+        let lastMessageIndex = -1;
+        let isAnimating = false;
+        let clickCount = 0;
+
+        // --- 2. Holiday Jingle Shake Audio Effect (shake_sound.mp3) ---
+        function playShakeAudio() {
+            try {
+                if (shakeAudio) {
+                    shakeAudio.currentTime = 0;
+                    const promise = shakeAudio.play();
+                    if (promise !== undefined) {
+                        promise.catch(err => {
+                            console.log('Audio autoplay prevented or waiting for interaction:', err);
+                            playChimeSound();
+                        });
+                    }
+                } else {
+                    playChimeSound();
+                }
+            } catch (err) {
+                playChimeSound();
+            }
+        }
+
+        // Ambient Web Audio Synthesized Chime (Graceful Offline Fallback)
+        let audioCtx = null;
+        function playChimeSound() {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                const now = audioCtx.currentTime;
+                // Harmonic gentle bell chime chords (E6, G#6, B6, E7)
+                const frequencies = [1318.51, 1661.22, 1975.53, 2637.02];
+                frequencies.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now + idx * 0.04);
+
+                    gain.gain.setValueAtTime(0.0001, now + idx * 0.04);
+                    gain.gain.exponentialRampToValueAtTime(0.08 / (idx + 1), now + idx * 0.04 + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.00001, now + idx * 0.04 + 0.9);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+
+                    osc.start(now + idx * 0.04);
+                    osc.stop(now + idx * 0.04 + 0.95);
+                });
+            } catch (e) {
+                // Audio gracefully ignored if browser denies
+            }
+        }
+
+        // --- 3. Fullscreen Snow Particle System (Light, Soft Falling Snow) ---
+        const bgCanvas = document.getElementById('snow-canvas');
+        const bgCtx = bgCanvas.getContext('2d');
+        let bgWidth, bgHeight;
+        let bgParticles = [];
+        const bgParticleCount = 80; // Light, delicate snowfall across screen
+        let bgSwirlIntensity = 0; // 0 = calm, 1 = intense blizzard swirl
+
+        function resizeBgCanvas() {
+            bgWidth = window.innerWidth;
+            bgHeight = window.innerHeight;
+            bgCanvas.width = bgWidth;
+            bgCanvas.height = bgHeight;
+        }
+        window.addEventListener('resize', resizeBgCanvas);
+        resizeBgCanvas();
+
+        class BgSnowFlake {
+            constructor() {
+                this.reset(true);
+            }
+
+            reset(initial = false) {
+                this.x = Math.random() * bgWidth;
+                this.y = initial ? Math.random() * bgHeight : -15;
+                this.radius = Math.random() * 1.8 + 0.6; // Small, delicate flakes
+                this.baseSpeed = Math.random() * 0.65 + 0.35; // Gentle, light fall
+                this.swaySpeed = Math.random() * 0.015 + 0.008;
+                this.swayAngle = Math.random() * Math.PI * 2;
+                this.swayDistance = Math.random() * 0.8 + 0.3;
+                this.opacity = Math.random() * 0.4 + 0.18; // Soft, translucent
+                this.swirlAngle = Math.random() * Math.PI * 2;
+                this.swirlRadius = Math.random() * 60 + 20;
+            }
+
+            update() {
+                this.swayAngle += this.swaySpeed;
+                
+                // Normal gentle, light snowfall
+                let vx = Math.sin(this.swayAngle) * this.swayDistance;
+                let vy = this.baseSpeed;
+
+                // When swirl is active, apply light poetic swirl force
+                if (bgSwirlIntensity > 0.01) {
+                    this.swirlAngle += 0.05 * bgSwirlIntensity;
+                    const swirlX = Math.cos(this.swirlAngle) * (3.5 * bgSwirlIntensity);
+                    const swirlY = Math.sin(this.swirlAngle * 0.5) * (1.8 * bgSwirlIntensity);
+                    vx += swirlX;
+                    vy += this.baseSpeed * (1 + 1.4 * bgSwirlIntensity) + swirlY;
+                }
+
+                this.x += vx;
+                this.y += vy;
+
+                // Screen wrapping
+                if (this.y > bgHeight + 15) {
+                    this.reset(false);
+                }
+                if (this.x > bgWidth + 15) {
+                    this.x = -15;
+                } else if (this.x < -15) {
+                    this.x = bgWidth + 15;
+                }
+            }
+
+            draw() {
+                bgCtx.beginPath();
+                bgCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                bgCtx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                bgCtx.fill();
+            }
+        }
+
+        for (let i = 0; i < bgParticleCount; i++) {
+            bgParticles.push(new BgSnowFlake());
+        }
+
+        // --- 4. Inner Snow Flurry System (Inside the Glass Dome) ---
+        const innerCanvas = document.getElementById('inner-snow-canvas');
+        const innerCtx = innerCanvas.getContext('2d');
+        let innerSize = 290;
+        let innerParticles = [];
+        const innerParticleCount = 65;
+        let innerSwirlIntensity = 0;
+
+        function resizeInnerCanvas() {
+            const dome = document.querySelector('.glass-dome');
+            if (dome) {
+                innerSize = dome.clientWidth || 290;
+                innerCanvas.width = innerSize;
+                innerCanvas.height = innerSize;
+            }
+        }
+        window.addEventListener('resize', resizeInnerCanvas);
+        resizeInnerCanvas();
+
+        class InnerSnowFlake {
+            constructor() {
+                this.reset(true);
+            }
+
+            reset(initial = false) {
+                const center = innerSize / 2;
+                const maxR = innerSize * 0.44;
+                const angle = Math.random() * Math.PI * 2;
+                const dist = Math.sqrt(Math.random()) * maxR;
+
+                this.x = center + Math.cos(angle) * dist;
+                this.y = initial ? center + Math.sin(angle) * dist : 10 + Math.random() * 30;
+                this.radius = Math.random() * 2.2 + 0.8;
+                this.baseSpeed = Math.random() * 0.8 + 0.4;
+                this.opacity = Math.random() * 0.7 + 0.3;
+                this.angle = Math.random() * Math.PI * 2;
+                this.angularSpeed = (Math.random() - 0.5) * 0.04;
+            }
+
+            update() {
+                const center = innerSize / 2;
+                const maxR = innerSize * 0.46;
+
+                if (innerSwirlIntensity > 0.02) {
+                    // Swirl in a circular whirlwind inside the dome
+                    this.angle += 0.09 * innerSwirlIntensity;
+                    const r = Math.hypot(this.x - center, this.y - center);
+                    const currentR = Math.min(r + (Math.random() - 0.48) * 4, maxR - 5);
+                    this.x = center + Math.cos(this.angle) * currentR;
+                    this.y = center + Math.sin(this.angle) * currentR;
+                } else {
+                    this.y += this.baseSpeed;
+                    this.x += Math.sin(this.angle) * 0.4;
+                    this.angle += 0.02;
+                }
+
+                // Check distance from dome center (circular containment)
+                const dist = Math.hypot(this.x - center, this.y - center);
+                if (dist > maxR || this.y > innerSize * 0.88) {
+                    this.reset(false);
+                }
+            }
+
+            draw() {
+                innerCtx.beginPath();
+                innerCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                innerCtx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+                innerCtx.shadowColor = 'rgba(255, 255, 255, 0.8)';
+                innerCtx.shadowBlur = 3;
+                innerCtx.fill();
+                innerCtx.shadowBlur = 0;
+            }
+        }
+
+        for (let i = 0; i < innerParticleCount; i++) {
+            innerParticles.push(new InnerSnowFlake());
+        }
+
+        // --- 5. Unified Animation Loop ---
+        function animateAll() {
+            // Background Canvas
+            bgCtx.clearRect(0, 0, bgWidth, bgHeight);
+            bgParticles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            // Inner Globe Canvas
+            innerCtx.clearRect(0, 0, innerSize, innerSize);
+            innerParticles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            // Exponential decay for swirl intensity
+            if (bgSwirlIntensity > 0.001) {
+                bgSwirlIntensity *= 0.965; // Soft decay
+            } else {
+                bgSwirlIntensity = 0;
+            }
+
+            if (innerSwirlIntensity > 0.001) {
+                innerSwirlIntensity *= 0.955;
+            } else {
+                innerSwirlIntensity = 0;
+            }
+
+            requestAnimationFrame(animateAll);
+        }
+
+        // Start animation once ready
+        window.addEventListener('load', () => {
+            resizeBgCanvas();
+            resizeInnerCanvas();
+            requestAnimationFrame(animateAll);
+        });
+
+        // --- 6. Floating Sparkles & Ethereal Burst Effect ---
+        function spawnSparkleBurst(x, y) {
+            const symbols = ['✦', '✧', '❄', '✨', '🤍'];
+            const count = 10;
+            for (let i = 0; i < count; i++) {
+                const el = document.createElement('span');
+                el.className = 'particle-fx';
+                el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                
+                const angle = (Math.PI * 2 / count) * i + (Math.random() * 0.4);
+                const distance = Math.random() * 70 + 40;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance - 20;
+                const tr = (Math.random() * 90 - 45) + 'deg';
+
+                el.style.left = `${x}px`;
+                el.style.top = `${y}px`;
+                el.style.setProperty('--tx', `${tx}px`);
+                el.style.setProperty('--ty', `${ty}px`);
+                el.style.setProperty('--tr', tr);
+
+                fxContainer.appendChild(el);
+                setTimeout(() => el.remove(), 1050);
+            }
+        }
+
+        // --- 7. Main Snow Globe Interaction Handler ---
+        function shakeSnowGlobe(e) {
+            if (isAnimating) return;
+            isAnimating = true;
+
+            clickCount++;
+            playShakeAudio();
+
+            // Coordinate for sparkle burst
+            const rect = snowGlobe.getBoundingClientRect();
+            const clickX = e && e.clientX ? e.clientX : rect.left + rect.width / 2;
+            const clickY = e && e.clientY ? e.clientY : rect.top + rect.height / 2;
+            spawnSparkleBurst(clickX, clickY);
+
+            // 1. Trigger CSS Shake Animation
+            snowGlobe.classList.remove('shake');
+            void snowGlobe.offsetWidth; // Force reflow
+            snowGlobe.classList.add('shake');
+
+            // 2. Trigger Snow Swirl Magic on both Canvas particle systems
+            bgSwirlIntensity = 1.0;
+            innerSwirlIntensity = 1.0;
+
+            // 3. Play Character Reaction Animation Video (Main Edit.mp4)
+            playReactionVideo();
+
+            // 4. Select a New Non-Repeating Philosophical Quote
+            let nextIndex;
+            do {
+                nextIndex = Math.floor(Math.random() * philosophicalQuotes.length);
+            } while (nextIndex === lastMessageIndex && philosophicalQuotes.length > 1);
+            lastMessageIndex = nextIndex;
+
+            // 4. Smooth Fade Out & Fade In of Quote
+            quoteWrapper.classList.add('fade-out');
+
+            setTimeout(() => {
+                const item = philosophicalQuotes[nextIndex];
+                messageText.textContent = `“${item.quote}”`;
+                quoteAuthor.textContent = item.author;
+                quoteAuthor.style.display = 'block';
+                badgeText.textContent = `✦ Thought #${nextIndex + 1} of ${philosophicalQuotes.length} ✦`;
+                
+                if (hintText) {
+                    hintText.innerHTML = '<span class="shake-icon">📱</span> Touch it again for another one';
+                }
+
+                // Smooth fade back in
+                quoteWrapper.classList.remove('fade-out');
+            }, 320);
+
+            // Clean up shake animation lock after completion (~520ms)
+            setTimeout(() => {
+                snowGlobe.classList.remove('shake');
+                isAnimating = false;
+            }, 550);
+        }
+
+        // --- 8. Mobile Phone Physical Shake Sensor (DeviceMotionEvent) ---
+        let motionSensorActive = false;
+        let lastAcc = { x: null, y: null, z: null };
+        let lastShakeTime = 0;
+        const SHAKE_DELTA_THRESHOLD = 16; // Acceleration delta threshold for phone shake
+        const SHAKE_COOLDOWN = 1400; // Minimum time between shakes (ms)
+
+        function handleDeviceMotion(event) {
+            const acc = event.accelerationIncludingGravity || event.acceleration;
+            if (!acc || acc.x === null) return;
+
+            if (lastAcc.x !== null) {
+                const dx = Math.abs(acc.x - lastAcc.x);
+                const dy = Math.abs(acc.y - lastAcc.y);
+                const dz = Math.abs(acc.z - lastAcc.z);
+                const totalChange = dx + dy + dz;
+
+                const now = Date.now();
+                if (totalChange > SHAKE_DELTA_THRESHOLD && (now - lastShakeTime > SHAKE_COOLDOWN)) {
+                    lastShakeTime = now;
+                    // Haptic feedback if available on mobile
+                    if (navigator.vibrate) {
+                        try { navigator.vibrate([40, 50, 40]); } catch (err) {}
+                    }
+                    shakeSnowGlobe();
+                }
+            }
+
+            lastAcc = { x: acc.x, y: acc.y, z: acc.z };
+        }
+
+        const motionBtn = document.getElementById('motion-btn');
+
+        function setMotionStatusUI(active, text) {
+            if (!motionBtn) return;
+            if (active) {
+                motionBtn.innerHTML = '<span>📱 Shake Sensor Active</span>';
+                motionBtn.style.borderColor = 'rgba(147, 197, 253, 0.4)';
+                motionBtn.style.color = '#7dd3fc';
+            } else if (text) {
+                motionBtn.innerHTML = `<span>✦ ${text} ✦</span>`;
+            }
+        }
+
+        // Initialize motion listener (handles iOS 13+ permission flow & Android)
+        function enableMotionSensors() {
+            if (motionSensorActive) return;
+
+            if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+                DeviceMotionEvent.requestPermission()
+                    .then(permissionState => {
+                        if (permissionState === 'granted') {
+                            window.addEventListener('devicemotion', handleDeviceMotion, { passive: true });
+                            motionSensorActive = true;
+                            setMotionStatusUI(true);
+                        } else {
+                            setMotionStatusUI(false, '');
+                        }
+                    })
+                    .catch(() => {
+                        setMotionStatusUI(false, 'Tap to Enable Motion');
+                    });
+            } else if (window.DeviceMotionEvent) {
+                window.addEventListener('devicemotion', handleDeviceMotion, { passive: true });
+                motionSensorActive = true;
+                setMotionStatusUI(true);
+            }
+        }
+
+        // Tap on motion pill enables sensor or triggers test shake
+        if (motionBtn) {
+            motionBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                enableMotionSensors();
+                shakeSnowGlobe();
+            });
+        }
+
+        // Unlock and prepare audio on first user touch/click for mobile browsers
+        function unlockAudio() {
+            if (shakeAudio) {
+                shakeAudio.load();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Auto-request or attach on first screen interaction
+        window.addEventListener('touchstart', () => {
+            enableMotionSensors();
+            startIdleVideo();
+            unlockAudio();
+        }, { passive: true, once: true });
+
+        window.addEventListener('click', () => {
+            enableMotionSensors();
+            startIdleVideo();
+            unlockAudio();
+        }, { passive: true, once: true });
+
+        // Snow globe click: initializes sensors and allows desktop testing / fallback
+        snowGlobe.addEventListener('click', (e) => {
+            enableMotionSensors();
+            unlockAudio();
+            shakeSnowGlobe(e);
+        });
+
+        // Keyboard accessibility (Space or Enter to shake)
+        snowGlobe.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                shakeSnowGlobe();
+            }
+        });
+    </script>
+</body>
+</html>
